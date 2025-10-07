@@ -11,7 +11,7 @@ import Main from '@/components/layout/Main/Main';
 import type { Metadata } from 'next';
 
 import '@/styles/globals.scss';
-import StudentsInterface from '@/types/StudentsInterface';
+import StudentsInterface from '@/types/StudentInterface';
 import { getStudentsApi } from '@/api/StudentsApi';
 
 export const metadata: Metadata = {

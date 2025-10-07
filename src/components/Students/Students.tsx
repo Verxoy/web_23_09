@@ -1,7 +1,7 @@
 'use client';
 
 import useStudents from '@/hooks/useStudents';
-import type StudentsInterface from '@/types/StudentsInterface';
+import type StudentsInterface from '@/types/StudentInterface';
 import styles from './Students.module.scss';
 
 

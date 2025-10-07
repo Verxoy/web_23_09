@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getStudentsApi } from '@/api/StudentsApi';
-import type StudentsInterface from '@/types/StudentsInterface';
+import type StudentsInterface from '@/types/StudentInterface';
 
 interface StudentsHookInterface {
   students: StudentsInterface[];
