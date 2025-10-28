@@ -1,6 +1,13 @@
-interface StudentsInterface {
+interface StudentInterface {
   id: number;
- last_name: string;
+  uuid?: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  contacts?: string;
+  groupId: number;
+  isDeleted?: boolean;
+  isNew?: boolean;
 };
 
-export default StudentsInterface;
+export default StudentInterface;

@@ -1,51 +1,60 @@
-import sqlite3 from 'sqlite3';
+import { Student } from './entity/Student.entity';
+import type StudentInterface from '@/types/StudentInterface';
+import getRandomFio from '@/utils/getRandomFio';
+import AppDataSource from './AppDataSource';
 
-import type StudentsInterface from '@/types/StudentInterface';
+const studentRepository = AppDataSource.getRepository(Student);
 
-sqlite3.verbose();
-
-export const getStudentsDb = async (): Promise<StudentsInterface[]> => {
-  const db = new sqlite3.Database(process.env.DB ?? './db/vki-web.db');
-
-  const groups = await new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM student';
-    db.all(sql, [], (err, rows) => {
-      if (err) {
-        reject(err);
-        db.close();
-        return;
-      }
-      resolve(rows);
-      db.close();
-    });
-  });
-
-  // test data
-  // const groups: GroupInterface[] = [
-  //   {
-  //     name: '2207 д2',
-  //   },
-  //   {
-  //     name: '2207 д2',
-  //   },
-  // ];
-
-  return groups as StudentsInterface[];
+/**
+ * Получение студентов
+ * @returns Promise<StudentInterface[]>
+ */
+export const getStudentsDb = async (): Promise<StudentInterface[]> => {
+  return await studentRepository.find();
 };
+
+/**
+ * Удаления студента
+ * @param studentId ИД удаляемого студента
+ * @returns Promise<number>
+ */
 export const deleteStudentDb = async (studentId: number): Promise<number> => {
-  const db = new sqlite3.Database(process.env.DB ?? './db/vki-web.db');
-
-  await new Promise((resolve, reject) => {
-    db.run('DELETE FROM student WHERE id=?', [studentId], (err) => {
-      if (err) {
-        reject(err);
-        db.close();
-        return;
-      }
-      resolve(studentId);
-      db.close();
-    });
-  });
-
+  await studentRepository.delete(studentId);
   return studentId;
+};
+
+/**
+ * Добавление студента
+ * @param studentField поля студента
+ * @returns Promise<StudentInterface>
+ */
+export const addStudentDb = async (studentFields: Omit<StudentInterface, 'id'>): Promise<StudentInterface> => {
+  const student = new Student();
+  const newStudent = await studentRepository.save({
+    ...student,
+    ...studentFields,
+  });
+  return newStudent;
+};
+
+/**
+ * Добавление рандомных студента
+ * @param amount количество рандомных записей
+ * @returns Promise<StudentInterface>
+ */
+export const addRandomStudentsDb = async (amount: number = 10): Promise<StudentInterface[]> => {
+  const students: StudentInterface[] = [];
+
+  for (let i = 0; i < amount; i++) {
+    const fio = getRandomFio();
+
+    const newStudent = await addStudentDb({
+      ...fio,
+      contacts: 'contact',
+      groupId: 1,
+    });
+    students.push(newStudent);
+  }
+
+  return students;
 };
